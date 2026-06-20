@@ -1,0 +1,132 @@
+.color-card {
+  background: #16213e;
+  border: 1px solid #2a2a4a;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.color-card:hover {
+  border-color: #e94560;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(233, 69, 96, 0.15);
+}
+
+.color-swatch {
+  height: 100px;
+  cursor: pointer;
+  position: relative;
+}
+
+.copy-tooltip {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+.color-info {
+  padding: 10px 12px;
+}
+
+.color-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 4px;
+  cursor: text;
+}
+
+.color-name-input {
+  width: 100%;
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+  background: #1a1a2e;
+  border: 1px solid #e94560;
+  border-radius: 4px;
+  padding: 3px 6px;
+  margin-bottom: 4px;
+}
+
+.color-hex {
+  font-size: 11px;
+  font-family: monospace;
+  color: #6b6b80;
+}
+
+.color-actions {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+
+.action-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.color-card:hover .action-btn {
+  opacity: 1;
+}
+
+.action-btn:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.action-menu {
+  position: absolute;
+  top: 36px;
+  right: 0;
+  background: #1a1a2e;
+  border: 1px solid #2a2a4a;
+  border-radius: 8px;
+  padding: 4px;
+  min-width: 140px;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.action-menu button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 8px 12px;
+  font-size: 12px;
+  color: #a0a0b0;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.action-menu button:hover {
+  background: #2a2a4a;
+  color: #ffffff;
+}
+
+.action-menu button.danger:hover {
+  background: #e94560;
+  color: #ffffff;
+}
+
+.menu-divider {
+  height: 1px;
+  background: #2a2a4a;
+  margin: 4px 0;
+}

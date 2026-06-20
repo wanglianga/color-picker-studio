@@ -1,0 +1,15 @@
+services:
+  app:
+    build: .
+    container_name: color-picker-studio
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - DISPLAY=${DISPLAY:-:0}
+    network_mode: host
+    stdin_open: true
+    tty: true
