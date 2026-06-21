@@ -8,13 +8,27 @@ contextBridge.exposeInMainWorld('electronAPI', {
     confirm: (colorData) => ipcRenderer.send('picker:confirm', colorData),
     getPixelColor: (x, y) => ipcRenderer.invoke('picker:getPixelColor', { x, y }),
     onColorUpdate: (callback) => {
-      ipcRenderer.on('color:update', (event, data) => callback(data))
+      const listener = (event, data) => callback(data)
+      ipcRenderer.on('color:update', listener)
+      return () => ipcRenderer.removeListener('color:update', listener)
     },
     onColorCapturing: (callback) => {
-      ipcRenderer.on('color:capturing', (event, data) => callback(data))
+      const listener = (event, data) => callback(data)
+      ipcRenderer.on('color:capturing', listener)
+      return () => ipcRenderer.removeListener('color:capturing', listener)
     },
     onColorPicked: (callback) => {
-      ipcRenderer.on('color:picked', (event, data) => callback(data))
+      const listener = (event, data) => callback(data)
+      ipcRenderer.on('color:picked', listener)
+      return () => ipcRenderer.removeListener('color:picked', listener)
+    }
+  },
+
+  overlay: {
+    onUpdate: (callback) => {
+      const listener = (event, data) => callback(data)
+      ipcRenderer.on('overlay:update', listener)
+      return () => ipcRenderer.removeListener('overlay:update', listener)
     }
   },
 
@@ -25,6 +39,11 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   screenshot: {
     capture: (x, y, width, height) => ipcRenderer.invoke('screenshot:capture', { x, y, width, height })
+  },
+
+  file: {
+    saveText: (options) => ipcRenderer.invoke('file:saveText', options),
+    saveImage: (options) => ipcRenderer.invoke('file:saveImage', options)
   },
 
   store: {
@@ -39,7 +58,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   },
 
   shell: {
-    openPath: (path) => ipcRenderer.send('shell:openPath', path)
+    openPath: (path) => ipcRenderer.send('shell:openPath', path),
+    showItemInFolder: (fullPath) => ipcRenderer.send('shell:showItemInFolder', fullPath)
   },
 
   window: {

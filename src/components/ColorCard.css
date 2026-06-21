@@ -63,6 +63,76 @@
   color: #6b6b80;
 }
 
+.color-source-tag {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 600;
+  padding: 1px 6px;
+  margin-left: 6px;
+  background: #0f3460;
+  color: #6b6b80;
+  border-radius: 4px;
+  vertical-align: middle;
+}
+
+.screenshot-preview {
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 2px solid #e94560;
+  z-index: 5;
+  background: #000;
+}
+
+.screenshot-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.screenshot-marker {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  border: 2px solid #e94560;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
+
+.screenshot-marker::before,
+.screenshot-marker::after {
+  content: '';
+  position: absolute;
+  background: #e94560;
+}
+
+.screenshot-marker::before {
+  top: 50%;
+  left: -10px;
+  right: -10px;
+  height: 1px;
+  transform: translateY(-50%);
+  opacity: 0.6;
+}
+
+.screenshot-marker::after {
+  left: 50%;
+  top: -10px;
+  bottom: -10px;
+  width: 1px;
+  transform: translateX(-50%);
+  opacity: 0.6;
+}
+
 .color-actions {
   position: absolute;
   top: 8px;

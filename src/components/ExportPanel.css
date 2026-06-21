@@ -263,6 +263,18 @@
   font-size: 13px;
   font-weight: 600;
   color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.history-type {
+  font-size: 9px;
+  font-weight: 600;
+  padding: 1px 6px;
+  background: #0f3460;
+  color: #6b6b80;
+  border-radius: 4px;
 }
 
 .history-time {

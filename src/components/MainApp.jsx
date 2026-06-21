@@ -18,14 +18,23 @@ function MainApp() {
 
   useEffect(() => {
     loadData()
-    
+  }, [])
+
+  useEffect(() => {
     const api = window.electronAPI?.picker
     if (api) {
-      api.onColorPicked((colorData) => {
+      const unsubscribe = api.onColorPicked((colorData) => {
         addColorToHistory(colorData)
+        if (activePalette) {
+          addColorToPalette(colorData, activePalette)
+        }
       })
+
+      return () => {
+        if (unsubscribe) unsubscribe()
+      }
     }
-  }, [])
+  }, [activePalette])
 
   const loadData = async () => {
     const api = window.electronAPI?.store
@@ -79,15 +88,14 @@ function MainApp() {
   }
 
   const addColorToPalette = (colorData, paletteId) => {
-    const newColor = {
-      id: generateId(),
-      ...colorData,
-      name: colorData.name || `颜色 ${palettes.find(p => p.id === paletteId)?.colors.length + 1 || 1}`
-    }
-
     setPalettes(prev => {
       const updated = prev.map(palette => {
         if (palette.id === paletteId) {
+          const newColor = {
+            id: generateId(),
+            ...colorData,
+            name: colorData.name || `颜色 ${palette.colors.length + 1}`
+          }
           return { ...palette, colors: [...palette.colors, newColor] }
         }
         return palette

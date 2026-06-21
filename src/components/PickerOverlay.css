@@ -1,0 +1,53 @@
+.picker-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: transparent;
+  z-index: 999999;
+  pointer-events: auto;
+  overflow: hidden;
+}
+
+.crosshair-cursor {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  width: 40px;
+  height: 40px;
+}
+
+.cursor-h {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(233, 69, 96, 0.9);
+  transform: translateY(-50%);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+}
+
+.cursor-v {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: rgba(233, 69, 96, 0.9);
+  transform: translateX(-50%);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+}
+
+.cursor-color-preview {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.5), 0 0 8px rgba(0, 0, 0, 0.3);
+}

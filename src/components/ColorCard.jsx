@@ -18,6 +18,7 @@ function ColorCard({
 }) {
   const [copiedFormat, setCopiedFormat] = useState(null)
   const [showMenu, setShowMenu] = useState(false)
+  const [showScreenshot, setShowScreenshot] = useState(false)
 
   const copyColor = async (format) => {
     const colorStr = formatColor(color.rgb, format)
@@ -28,20 +29,39 @@ function ColorCard({
     }
   }
 
+  const downloadScreenshot = async () => {
+    if (!color.screenshot || !window.electronAPI?.file) return
+
+    await window.electronAPI.file.saveImage({
+      defaultPath: `${color.name || 'color'}-screenshot.png`,
+      filters: [
+        { name: 'PNG Image', extensions: ['png'] }
+      ],
+      dataUrl: color.screenshot
+    })
+  }
+
   return (
-    <div className="color-card" onMouseLeave={() => setShowMenu(false)}>
-      <div 
+    <div className="color-card" onMouseLeave={() => { setShowMenu(false); setShowScreenshot(false) }}>
+      <div
         className="color-swatch"
         style={{ backgroundColor: color.hex }}
         onClick={() => copyColor('hex')}
+        onMouseEnter={() => color.screenshot && setShowScreenshot(true)}
       >
         {copiedFormat && (
           <div className="copy-tooltip">
-            已复制 {copiedFormat.toUpperCase()}
+            Copied {copiedFormat.toUpperCase()}
+          </div>
+        )}
+        {color.screenshot && showScreenshot && (
+          <div className="screenshot-preview">
+            <img src={color.screenshot} alt="Source screenshot" />
+            <div className="screenshot-marker" />
           </div>
         )}
       </div>
-      
+
       <div className="color-info">
         {isEditing ? (
           <input
@@ -58,7 +78,8 @@ function ColorCard({
           />
         ) : (
           <div className="color-name" onDoubleClick={onEditName}>
-            {color.name || '未命名'}
+            {color.name || 'Unnamed'}
+            {color.source && <span className="color-source-tag">{color.source}</span>}
           </div>
         )}
         <div className="color-hex">{color.hex.toUpperCase()}</div>
@@ -66,38 +87,46 @@ function ColorCard({
 
       {showActions && (
         <div className="color-actions">
-          <button 
+          <button
             className="action-btn more-btn"
             onClick={() => setShowMenu(!showMenu)}
           >
-            ⋯
+            ...
           </button>
-          
+
           {showMenu && (
             <div className="action-menu">
               <button onClick={() => copyColor('hex')}>
-                复制 HEX
+                Copy HEX
               </button>
               <button onClick={() => copyColor('rgb')}>
-                复制 RGB
+                Copy RGB
               </button>
               <button onClick={() => copyColor('hsl')}>
-                复制 HSL
+                Copy HSL
               </button>
+              {color.screenshot && (
+                <>
+                  <div className="menu-divider" />
+                  <button onClick={downloadScreenshot}>
+                    Save source screenshot
+                  </button>
+                </>
+              )}
               <div className="menu-divider" />
               {onAddToPalette && (
                 <button onClick={onAddToPalette}>
-                  添加到色板
+                  Add to palette
                 </button>
               )}
               {onAddToFavorites && (
                 <button onClick={onAddToFavorites}>
-                  {isFavorite ? '取消收藏' : '加入收藏'}
+                  {isFavorite ? 'Remove favorite' : 'Add favorite'}
                 </button>
               )}
               {onRemove && (
                 <button className="danger" onClick={onRemove}>
-                  删除
+                  Delete
                 </button>
               )}
             </div>
