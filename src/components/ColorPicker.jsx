@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { rgbToHex, rgbToHsl, formatColor, getColorName } from '../utils/colorUtils.js'
 import './ColorPicker.css'
 
@@ -7,6 +7,8 @@ function ColorPicker() {
   const [position, setPosition] = useState({ x: 0, y: 0 })
   const [magnifierImage, setMagnifierImage] = useState(null)
   const [format, setFormat] = useState('hex')
+  const [recentColors, setRecentColors] = useState([])
+  const gridCanvasRef = useRef(null)
 
   useEffect(() => {
     const api = window.electronAPI?.picker
@@ -30,6 +32,35 @@ function ColorPicker() {
       if (unsubscribe) unsubscribe()
     }
   }, [])
+
+  useEffect(() => {
+    const canvas = gridCanvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    const size = 200
+    const pixelSize = 10
+    const pixels = size / pixelSize
+
+    ctx.clearRect(0, 0, size, size)
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)'
+    ctx.lineWidth = 0.5
+
+    for (let i = 0; i <= pixels; i++) {
+      const pos = i * pixelSize
+      ctx.beginPath()
+      ctx.moveTo(pos, 0)
+      ctx.lineTo(pos, size)
+      ctx.stroke()
+      ctx.beginPath()
+      ctx.moveTo(0, pos)
+      ctx.lineTo(size, pos)
+      ctx.stroke()
+    }
+
+    ctx.strokeStyle = 'rgba(233, 69, 96, 0.9)'
+    ctx.lineWidth = 1
+    ctx.strokeRect(size / 2 - pixelSize / 2, size / 2 - pixelSize / 2, pixelSize, pixelSize)
+  }, [magnifierImage])
 
   const copyColor = useCallback((fmt) => {
     const colorStr = formatColor(color, fmt)
@@ -56,6 +87,12 @@ function ColorPicker() {
           ) : (
             <div className="magnifier-placeholder">加载中...</div>
           )}
+          <canvas
+            ref={gridCanvasRef}
+            width={200}
+            height={200}
+            className="magnifier-grid-canvas"
+          />
           <div className="crosshair-h"></div>
           <div className="crosshair-v"></div>
           <div className="crosshair-dot"></div>
@@ -118,6 +155,22 @@ function ColorPicker() {
           </div>
         </div>
       </div>
+
+      {recentColors.length > 0 && (
+        <div className="recent-colors-section">
+          <div className="recent-colors-title">本次取样</div>
+          <div className="recent-colors-grid">
+            {recentColors.map((c, idx) => (
+              <div
+                key={idx}
+                className="recent-color-item"
+                style={{ backgroundColor: c.hex }}
+                title={c.hex.toUpperCase()}
+              />
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="picker-hint">
         点击取色 · 右键/ESC 取消

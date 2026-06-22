@@ -227,10 +227,12 @@ function sendColorUpdate(x, y, display) {
 
   if (overlayWindow && !overlayWindow.isDestroyed()) {
     const pixel = getPixelFromCapture(x, y)
+    const magnifierData = getMagnifierRegion(x, y, 160)
     overlayWindow.webContents.send('overlay:update', {
       x,
       y,
-      pixel
+      pixel,
+      magnifierImage: magnifierData
     })
   }
 }
