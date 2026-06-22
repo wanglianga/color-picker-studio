@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react'
+import { hexToRgb, rgbToHsl } from '../utils/colorUtils.js'
 import './ExportPanel.css'
 
-function ExportPanel({ palettes }) {
+function ExportPanel({ palettes, onImportWithDiff }) {
   const [selectedPalette, setSelectedPalette] = useState(palettes[0]?.id || null)
   const [exportFormat, setExportFormat] = useState('css')
   const [prefix, setPrefix] = useState('--color-')
   const [exportHistory, setExportHistory] = useState([])
+  const [importFormat, setImportFormat] = useState('json')
 
   useEffect(() => {
     loadExportHistory()
@@ -159,6 +161,124 @@ module.exports = {
     }
   }
 
+  const handleImportFile = async () => {
+    if (!window.electronAPI?.file) return
+
+    const result = await window.electronAPI.file.openText({
+      defaultPath: '',
+      filters: [
+        { name: 'CSS', extensions: ['css'] },
+        { name: 'JSON', extensions: ['json'] },
+        { name: 'SCSS', extensions: ['scss'] },
+        { name: 'All Files', extensions: ['*'] }
+      ]
+    })
+
+    if (!result.success || !result.content) return
+
+    const fileExt = (result.filePath || '').split('.').pop().toLowerCase()
+    const colors = parseImportedContent(result.content, fileExt)
+
+    if (colors.length > 0) {
+      let paletteName = '导入色板'
+      if (fileExt === 'json') {
+        try {
+          const parsed = JSON.parse(result.content)
+          if (parsed.palette) paletteName = parsed.palette
+        } catch (e) {}
+      }
+      onImportWithDiff(colors, paletteName)
+    }
+  }
+
+  const parseImportedContent = (content, fileExt) => {
+    const colors = []
+
+    try {
+      if (fileExt === 'json') {
+        const parsed = JSON.parse(content)
+        const colorArray = parsed.colors || parsed
+        if (Array.isArray(colorArray)) {
+          colorArray.forEach(c => {
+            const hex = c.hex || ''
+            if (hex.match(/^#[0-9a-fA-F]{6}$/)) {
+              const rgb = c.rgb ? parseRgbString(c.rgb) : hexToRgb(hex)
+              const hsl = c.hsl ? parseHslString(c.hsl) : (rgb ? rgbToHsl(rgb.r, rgb.g, rgb.b) : { h: 0, s: 0, l: 0 })
+              colors.push({
+                name: c.name || '',
+                hex: hex.toLowerCase(),
+                rgb: rgb || { r: 0, g: 0, b: 0 },
+                hsl: hsl,
+                source: 'import'
+              })
+            }
+          })
+        }
+      } else if (fileExt === 'css' || fileExt === 'scss') {
+        const varRegex = /(?:--|\$)([a-zA-Z0-9_-]+)\s*:\s*(#[0-9a-fA-F]{3,8})\s*;/g
+        let match
+        while ((match = varRegex.exec(content)) !== null) {
+          const name = match[1].replace(/[-_]+/g, ' ').replace(/^\s+|\s+$/g, '')
+          let hex = match[2].toLowerCase()
+          if (hex.length === 4) {
+            hex = '#' + hex[1] + hex[1] + hex[2] + hex[2] + hex[3] + hex[3]
+          }
+          if (hex.length === 7) {
+            const rgb = hexToRgb(hex)
+            const hsl = rgb ? rgbToHsl(rgb.r, rgb.g, rgb.b) : { h: 0, s: 0, l: 0 }
+            colors.push({
+              name,
+              hex,
+              rgb: rgb || { r: 0, g: 0, b: 0 },
+              hsl,
+              source: 'import'
+            })
+          }
+        }
+      } else {
+        const hexRegex = /#([0-9a-fA-F]{6})\b/g
+        let hexMatch
+        const seen = new Set()
+        let index = 0
+        while ((hexMatch = hexRegex.exec(content)) !== null) {
+          const hex = '#' + hexMatch[1].toLowerCase()
+          if (!seen.has(hex)) {
+            seen.add(hex)
+            const rgb = hexToRgb(hex)
+            const hsl = rgb ? rgbToHsl(rgb.r, rgb.g, rgb.b) : { h: 0, s: 0, l: 0 }
+            colors.push({
+              name: `颜色 ${++index}`,
+              hex,
+              rgb: rgb || { r: 0, g: 0, b: 0 },
+              hsl,
+              source: 'import'
+            })
+          }
+        }
+      }
+    } catch (err) {
+      console.error('Parse import error:', err)
+    }
+
+    return colors
+  }
+
+  const parseRgbString = (str) => {
+    const match = str.match(/(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/)
+    if (match) {
+      return { r: parseInt(match[1]), g: parseInt(match[2]), b: parseInt(match[3]) }
+    }
+    return null
+  }
+
+  const parseHslString = (str) => {
+    const match = str.match(/(\d+)\s*,\s*(\d+)%?\s*,\s*(\d+)%?/)
+    if (match) {
+      return { h: parseInt(match[1]), s: parseInt(match[2]), l: parseInt(match[3]) }
+    }
+    return null
+  }
+
   const formatTime = (timestamp) => {
     return new Date(timestamp).toLocaleString('zh-CN', {
       month: '2-digit',
@@ -173,8 +293,8 @@ module.exports = {
   return (
     <div className="export-panel">
       <div className="view-header">
-        <h2 className="view-title">导出色板</h2>
-        <p className="view-subtitle">将品牌色板导出为开发可用的格式</p>
+        <h2 className="view-title">导出 / 导入色板</h2>
+        <p className="view-subtitle">将品牌色板导出为开发可用的格式，或从文件导入色板</p>
       </div>
 
       <div className="export-content">
@@ -252,6 +372,19 @@ module.exports = {
               <line x1="12" y1="15" x2="12" y2="3"/>
             </svg>
             下载文件
+          </button>
+        </div>
+
+        <div className="import-section">
+          <h3 className="import-title">导入色板</h3>
+          <p className="import-desc">从 CSS/JSON/SCSS 文件导入颜色，工具会自动对比当前色板与导入文件的差异</p>
+          <button className="import-btn" onClick={handleImportFile}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+            选择文件导入
           </button>
         </div>
 

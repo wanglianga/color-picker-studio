@@ -9,7 +9,7 @@ const navItems = [
   { id: 'export', label: '导出', icon: 'export' }
 ]
 
-function Sidebar({ activeView, setActiveView }) {
+function Sidebar({ activeView, setActiveView, changeHistoryCount, toggleChangePanel, showChangePanel }) {
   const renderIcon = (iconName) => {
     switch (iconName) {
       case 'palette':
@@ -70,8 +70,24 @@ function Sidebar({ activeView, setActiveView }) {
             <span className="nav-label">{item.label}</span>
           </button>
         ))}
+
+        <div className="sidebar-divider" />
+
+        <button
+          className={`nav-item change-history-toggle ${showChangePanel ? 'active' : ''}`}
+          onClick={toggleChangePanel}
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <polyline points="1 4 1 10 7 10"/>
+            <path d="M3.51 15a9 9 0 102.13-9.36L1 10"/>
+          </svg>
+          <span className="nav-label">变更</span>
+          {changeHistoryCount > 0 && (
+            <span className="change-badge">{changeHistoryCount > 99 ? '99+' : changeHistoryCount}</span>
+          )}
+        </button>
       </div>
-      
+
       <div className="sidebar-footer">
         <div className="shortcut-hint">
           <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>C</kbd>

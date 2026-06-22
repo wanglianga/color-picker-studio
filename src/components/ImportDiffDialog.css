@@ -1,0 +1,316 @@
+.import-diff-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001;
+  backdrop-filter: blur(4px);
+}
+
+.import-diff-modal {
+  width: 600px;
+  max-height: 80vh;
+  background: #1a1a2e;
+  border: 1px solid #2a2a4a;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.idiff-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid #2a2a4a;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.idiff-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.idiff-close-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: #6b6b80;
+  transition: all 0.2s;
+}
+
+.idiff-close-btn:hover {
+  background: #2a2a4a;
+  color: #ffffff;
+}
+
+.idiff-summary {
+  padding: 20px 24px;
+  border-bottom: 1px solid #2a2a4a;
+}
+
+.idiff-summary-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #a0a0b0;
+  margin-bottom: 14px;
+}
+
+.idiff-summary-stats {
+  display: flex;
+  gap: 16px;
+}
+
+.idiff-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 16px;
+  background: #16213e;
+  border-radius: 10px;
+  min-width: 80px;
+}
+
+.idiff-stat-num {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.idiff-stat-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: #6b6b80;
+}
+
+.idiff-stat-add .idiff-stat-num {
+  color: #4ade80;
+}
+
+.idiff-stat-modify .idiff-stat-num {
+  color: #fbbf24;
+}
+
+.idiff-stat-delete .idiff-stat-num {
+  color: #ef4444;
+}
+
+.idiff-stat-unchanged .idiff-stat-num {
+  color: #6b6b80;
+}
+
+.idiff-no-diff {
+  padding: 16px;
+  text-align: center;
+  font-size: 13px;
+  color: #4ade80;
+  background: rgba(74, 222, 128, 0.05);
+  border: 1px solid rgba(74, 222, 128, 0.2);
+  border-radius: 10px;
+}
+
+.idiff-details {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 24px;
+}
+
+.idiff-section {
+  margin-bottom: 20px;
+}
+
+.idiff-section:last-child {
+  margin-bottom: 0;
+}
+
+.idiff-section-title {
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.idiff-section-add {
+  color: #4ade80;
+}
+
+.idiff-section-modify {
+  color: #fbbf24;
+}
+
+.idiff-section-delete {
+  color: #ef4444;
+}
+
+.idiff-color-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.idiff-color-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: #16213e;
+  border: 1px solid transparent;
+  border-radius: 8px;
+}
+
+.idiff-item-add {
+  border-color: rgba(74, 222, 128, 0.3);
+  background: rgba(74, 222, 128, 0.03);
+}
+
+.idiff-item-modify {
+  border-color: rgba(251, 191, 36, 0.3);
+  background: rgba(251, 191, 36, 0.03);
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.idiff-item-delete {
+  border-color: rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.03);
+  opacity: 0.7;
+}
+
+.idiff-color-swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+}
+
+.idiff-color-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.idiff-color-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.idiff-color-hex {
+  font-size: 10px;
+  font-family: monospace;
+  color: #6b6b80;
+}
+
+.idiff-color-hex.old {
+  text-decoration: line-through;
+  color: #ef4444;
+}
+
+.idiff-color-hex.new {
+  color: #4ade80;
+}
+
+.idiff-item-badge {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.idiff-badge-add {
+  background: rgba(74, 222, 128, 0.15);
+  color: #4ade80;
+}
+
+.idiff-badge-modify {
+  background: rgba(251, 191, 36, 0.15);
+  color: #fbbf24;
+  align-self: flex-end;
+}
+
+.idiff-badge-delete {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+.idiff-diff-pair {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.idiff-diff-side {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.idiff-diff-arrow {
+  color: #6b6b80;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.idiff-diff-old {
+  opacity: 0.6;
+}
+
+.idiff-actions {
+  padding: 16px 24px;
+  border-top: 1px solid #2a2a4a;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.idiff-btn {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.idiff-btn-cancel {
+  color: #a0a0b0;
+  background: #16213e;
+  border: 1px solid #2a2a4a;
+}
+
+.idiff-btn-cancel:hover {
+  border-color: #3a3a5a;
+  color: #ffffff;
+}
+
+.idiff-btn-apply {
+  background: linear-gradient(135deg, #e94560, #ff6b6b);
+  color: #ffffff;
+}
+
+.idiff-btn-apply:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(233, 69, 96, 0.4);
+}

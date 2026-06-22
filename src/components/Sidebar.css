@@ -69,3 +69,39 @@
 .shortcut-hint span {
   font-size: 10px;
 }
+
+.sidebar-divider {
+  height: 1px;
+  background: #2a2a4a;
+  margin: 8px 4px;
+}
+
+.change-history-toggle {
+  position: relative;
+}
+
+.change-badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  background: #e94560;
+  color: #ffffff;
+  font-size: 9px;
+  font-weight: 700;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.change-history-toggle.active {
+  background: #2dd4bf;
+  color: #ffffff;
+}
+
+.change-history-toggle.active .change-badge {
+  background: rgba(255, 255, 255, 0.3);
+}

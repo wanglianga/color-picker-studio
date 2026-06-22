@@ -11,7 +11,9 @@ function PaletteView({
   addColorToPalette,
   removeColorFromPalette,
   updateColorName,
-  startPicker
+  updateColorValue,
+  startPicker,
+  toggleChangePanel
 }) {
   const [showNewPalette, setShowNewPalette] = useState(false)
   const [newPaletteName, setNewPaletteName] = useState('')
@@ -69,7 +71,7 @@ function PaletteView({
               )}
             </div>
           ))}
-          
+
           {showNewPalette ? (
             <div className="new-palette-input">
               <input
@@ -133,6 +135,13 @@ function PaletteView({
           </svg>
           <span>开始取色</span>
           <kbd>Alt+Shift+C</kbd>
+        </button>
+        <button className="change-panel-btn" onClick={toggleChangePanel}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <polyline points="1 4 1 10 7 10"/>
+            <path d="M3.51 15a9 9 0 102.13-9.36L1 10"/>
+          </svg>
+          变更历史
         </button>
       </div>
     </div>

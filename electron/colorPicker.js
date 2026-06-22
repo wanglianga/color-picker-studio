@@ -74,7 +74,6 @@ export function createOverlayWindow(isDev) {
     hasShadow: false,
     show: false,
     backgroundColor: '#00000000',
-    opacity: 0.001,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
